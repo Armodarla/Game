@@ -397,7 +397,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Game Title
+  m_text: Aurora
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5de3ea27edce8694e9deecd1a49b5a02, type: 2}
   m_sharedMaterial: {fileID: 1955168911122627826, guid: 5de3ea27edce8694e9deecd1a49b5a02, type: 2}
