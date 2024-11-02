@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class CharacterCodes : MonoBehaviour
 {
-    public float player_speed;
-    public float speed_modifier;
+    public float player_speed=2;
+    public float speed_modifier=2;
+    public float jumpPower=500;
 
+
+    [SerializeField] Transform groundCheckCollider;
+    [SerializeField] LayerMask groundLayer;
     Rigidbody2D PlayerRb;
     Animator animator;
     float horizontalVal;
-    
+
+    const float groundCheckRadius = 0.2f;
     bool isRunning = false;
     bool facingRight = true;
+    [SerializeField] bool isGrounded = false;
+    [SerializeField] bool jumpFlag = false;
 
     void Awake()
     {
@@ -32,16 +39,24 @@ public class CharacterCodes : MonoBehaviour
         {
             isRunning = false;
         }
+
+        if (Input.GetButtonDown("Jump"))
+            jumpFlag = true;
+        else if (Input.GetButtonUp("Jump"))
+            jumpFlag = false;
+        
     }
 
     void FixedUpdate()
     {
-        Move(horizontalVal);
+        GroundCheck();
+        Move(horizontalVal,jumpFlag);
     }
 
-    void Move(float dir)
+    void Move(float dir, bool jumpFlag)
     {
-        float xDir = dir * player_speed * 100 * Time.deltaTime;
+        #region Walk & Run
+        float xDir = dir * player_speed * 100 * Time.fixedDeltaTime;
         if (isRunning)
         {
             xDir *= speed_modifier;
@@ -67,5 +82,25 @@ public class CharacterCodes : MonoBehaviour
         // 0 iddle, 3.9999 walk, 7.999 run
         // Debug.Log(PlayerRb.linearVelocity.x);
         animator.SetFloat("xVelocity", Mathf.Abs(PlayerRb.linearVelocity.x));
+        #endregion
+
+        #region Jump!
+        if (isGrounded && jumpFlag)
+        {
+            jumpFlag = false;
+            isGrounded = false;
+            PlayerRb.AddForce(new Vector2(0f, jumpPower));
+        }
+        #endregion
+    }
+
+    void GroundCheck()
+    {
+        isGrounded = false;
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheckCollider.position, groundCheckRadius, groundLayer);
+        if (colliders.Length > 0)
+        {
+            isGrounded = true;
+        }
     }
 }
