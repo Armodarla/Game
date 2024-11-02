@@ -4,14 +4,12 @@ using UnityEngine.SceneManagement;
 
 public class SceneCode : MonoBehaviour
 {
-    public GameObject panel;
-
     public void AsyncChangeScene(int sceneID)
     {
         StartCoroutine(LoadSceneID(sceneID));
     }
 
-    public void OpenClosePanel()
+    public void OpenClosePanel(GameObject panel)
     {
         if (panel.activeSelf)
         {
@@ -21,7 +19,7 @@ public class SceneCode : MonoBehaviour
         {
             panel.SetActive(true);
         }
-            
+
     }
 
 
@@ -36,11 +34,12 @@ public class SceneCode : MonoBehaviour
 
     }
 
-    public void Quit(){
-        #if UNITY_EDITOR
+    public void Quit()
+    {
+#if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
-        #else
-            Application.Quit();
-        #endif
+#else
+        Application.Quit();
+#endif
     }
 }
