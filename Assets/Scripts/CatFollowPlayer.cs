@@ -1,5 +1,5 @@
 using UnityEngine;
-using TMPro;
+using Unity.Cinemachine;
 
 public class CatFollowPlayer : MonoBehaviour
 {
@@ -7,9 +7,11 @@ public class CatFollowPlayer : MonoBehaviour
     public float followSpeed = 2f;     // Speed at which the cat follows the player
     public float followDistance = 1f;  // How close the cat stays to the player
     public CharacterCodes characterCode;
+    public CinemachineCamera cam;
 
-    public TMP_Text temp_text;
-    bool isGrounded = false;
+
+    [SerializeField]bool doGroundCheck = true; // Cat don't do GroundCheck when following player (until its in the follow distance)
+    [SerializeField]bool isGrounded = false;
     bool facingRight = true;
     
     [SerializeField] Transform groundCheckCollider;
@@ -40,10 +42,12 @@ public class CatFollowPlayer : MonoBehaviour
 
     void FixedUpdate()
     {
-        GroundCheck();
+        if (doGroundCheck)
+            GroundCheck();
         if (catMode == 0)
         {
             CatTeleport();
+            cam.Target.TrackingTarget = player;
             controllingCat = false;
             characterCode.isControllable = true;
             FollowPlayer();
@@ -61,15 +65,19 @@ public class CatFollowPlayer : MonoBehaviour
 
     void FollowPlayer()
     {
+        if (!isGrounded)
+            gameObject.GetComponent<Collider2D>().enabled = false;
         // Calculate the distance between the cat and the player
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
 
         Vector2 direction = (player.position - transform.position).normalized;
+        
+        
         // If the cat is farther than the followDistance, move toward the player
         if (distanceToPlayer > followDistance)
         {
-            if(!isGrounded)
-                gameObject.GetComponent<Collider2D>().enabled = false;
+            isGrounded = false;
+            doGroundCheck = false;
             // Move the cat towards the player
             if (!characterCode.isRunning)
                 rb.linearVelocity = new Vector2(direction.x * followSpeed * 120 * Time.fixedDeltaTime, (direction.y) * 100 * followSpeed * Time.fixedDeltaTime);
@@ -78,8 +86,9 @@ public class CatFollowPlayer : MonoBehaviour
         }
         else
         {
-            // Stop the cat when it reaches the follow distance
+            doGroundCheck = true;
             gameObject.GetComponent<Collider2D>().enabled = true;
+            // Stop the cat when it reaches the follow distance
             rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
         }
 
@@ -101,14 +110,20 @@ public class CatFollowPlayer : MonoBehaviour
 
     void CatStay()
     {
+        doGroundCheck = true;
+        gameObject.GetComponent<Collider2D>().enabled = true;
         rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
     }
 
     void CatControl()
     {
         Debug.Log("Control Cat Mode!");
+        doGroundCheck = true;
         controllingCat = true;
         characterCode.isControllable = false;
+
+        cam.Target.TrackingTarget = transform;
+
         float dir = characterCode.horizontalVal;
         #region Walk & Run
         float xDir = dir * followSpeed * 100 * Time.fixedDeltaTime;
