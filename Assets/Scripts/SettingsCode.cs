@@ -12,10 +12,12 @@ public class SettingsCode : MonoBehaviour
     public void SetBGMVolume(float volume)
     {
         BgmMixer.SetFloat("Volume", volume);
+        PlayerPrefs.SetFloat("BGMvol", volume);
     }
 
     public void SetSFXVolume(float volume)
     {
         SfxMixer.SetFloat("Volume", volume);
+        PlayerPrefs.SetFloat("SFXvol", volume);
     }
 }
