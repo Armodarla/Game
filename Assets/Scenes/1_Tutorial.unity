@@ -344,6 +344,10 @@ MonoBehaviour:
   followSpeed: 2
   followDistance: 1
   characterCode: {fileID: 1531909502}
+  groundCheckCollider: {fileID: 178579634}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
   catMode: 0
 --- !u!1 &1060930956
 GameObject:
@@ -593,12 +597,14 @@ MonoBehaviour:
   speed_modifier: 2
   jumpPower: 100
   isControllable: 1
+  isRunning: 0
+  horizontalVal: 0
+  jumpFlag: 0
   groundCheckCollider: {fileID: 1060930957}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
   isGrounded: 0
-  jumpFlag: 0
 --- !u!95 &1531909503
 Animator:
   serializedVersion: 7
