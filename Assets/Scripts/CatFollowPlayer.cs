@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class CatFollowPlayer : MonoBehaviour
 {
@@ -7,18 +8,23 @@ public class CatFollowPlayer : MonoBehaviour
     public float followDistance = 1f;  // How close the cat stays to the player
     public CharacterCodes characterCode;
 
+    public TMP_Text temp_text;
     bool isGrounded = false;
     bool facingRight = true;
+    
     [SerializeField] Transform groundCheckCollider;
     [SerializeField] LayerMask groundLayer;
 
+
     Rigidbody2D rb;            // Cat's Rigidbody2D
+    SpriteRenderer sprender;
     [SerializeField] int catMode = 0; // 0 = Follows player, 1 = Stops, 2 = Player controls cat
     bool controllingCat = false;
     Animator animator;
 
     void Start()
     {
+        sprender = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
@@ -37,6 +43,7 @@ public class CatFollowPlayer : MonoBehaviour
         GroundCheck();
         if (catMode == 0)
         {
+            CatTeleport();
             controllingCat = false;
             characterCode.isControllable = true;
             FollowPlayer();
@@ -44,8 +51,8 @@ public class CatFollowPlayer : MonoBehaviour
         else if (catMode == 1)
             CatStay();
         else if (catMode == 2)
-            ControlCat();
-            
+            CatControl();
+        temp_text.text = ("Felix : " + catMode.ToString());
     }
 
     void ShiftMode()
@@ -62,15 +69,18 @@ public class CatFollowPlayer : MonoBehaviour
         // If the cat is farther than the followDistance, move toward the player
         if (distanceToPlayer > followDistance)
         {
+            if(!isGrounded)
+                gameObject.GetComponent<Collider2D>().enabled = false;
             // Move the cat towards the player
             if (!characterCode.isRunning)
-                rb.linearVelocity = new Vector2(direction.x * followSpeed * 120 * Time.fixedDeltaTime, (direction.y - 0.2f) * 100 * followSpeed * Time.fixedDeltaTime);
+                rb.linearVelocity = new Vector2(direction.x * followSpeed * 120 * Time.fixedDeltaTime, (direction.y) * 100 * followSpeed * Time.fixedDeltaTime);
             else
-                rb.linearVelocity = new Vector2(direction.x * followSpeed * 120 * Time.fixedDeltaTime * characterCode.speed_modifier, (direction.y - 0.2f) * 100 * followSpeed * Time.fixedDeltaTime);
+                rb.linearVelocity = new Vector2(direction.x * followSpeed * 120 * Time.fixedDeltaTime * characterCode.speed_modifier, (direction.y) * 100 * followSpeed * Time.fixedDeltaTime);
         }
         else
         {
             // Stop the cat when it reaches the follow distance
+            gameObject.GetComponent<Collider2D>().enabled = true;
             rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
         }
 
@@ -95,7 +105,7 @@ public class CatFollowPlayer : MonoBehaviour
         rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
     }
 
-    void ControlCat()
+    void CatControl()
     {
         Debug.Log("Control Cat Mode!");
         controllingCat = true;
@@ -136,11 +146,21 @@ public class CatFollowPlayer : MonoBehaviour
     void GroundCheck()
     {
         isGrounded = false;
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheckCollider.position, 0.2f, groundLayer);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheckCollider.position, 0.1f, groundLayer);
         if (colliders.Length > 0)
         {
             isGrounded = true;
         }
         animator.SetBool("Jumping", !isGrounded);
+    }
+
+    void CatTeleport()
+    {
+        if (controllingCat)
+        {
+            sprender.enabled = false;
+            transform.localPosition = player.localPosition;
+            sprender.enabled = true;
+        }
     }
 }

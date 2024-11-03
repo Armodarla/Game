@@ -20,7 +20,7 @@ public class CharacterCodes : MonoBehaviour
     Animator animator;
     
 
-    const float groundCheckRadius = 0.2f;
+    const float groundCheckRadius = 0.1f;
     bool facingRight = true;
     [SerializeField] bool isGrounded = false;
 
