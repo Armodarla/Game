@@ -6,17 +6,21 @@ public class CatFollowPlayer : MonoBehaviour
     public float followSpeed = 2f;     // Speed at which the cat follows the player
     public float followDistance = 1f;  // How close the cat stays to the player
     public CharacterCodes characterCode;
-    
 
+    bool isGrounded = false;
     bool facingRight = true;
+    [SerializeField] Transform groundCheckCollider;
+    [SerializeField] LayerMask groundLayer;
+
     Rigidbody2D rb;            // Cat's Rigidbody2D
     [SerializeField] int catMode = 0; // 0 = Follows player, 1 = Stops, 2 = Player controls cat
     bool controllingCat = false;
+    Animator animator;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        // characterCode = playerObj.GetComponent<CharacterCodes>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -30,6 +34,7 @@ public class CatFollowPlayer : MonoBehaviour
 
     void FixedUpdate()
     {
+        GroundCheck();
         if (catMode == 0)
         {
             controllingCat = false;
@@ -116,5 +121,26 @@ public class CatFollowPlayer : MonoBehaviour
 
         transform.localScale = currentScale;
         #endregion
+
+        #region Jump!
+        bool jumpFlag = characterCode.jumpFlag;
+        if (isGrounded && jumpFlag)
+        {
+            jumpFlag = false;
+            isGrounded = false;
+            rb.AddForce(new Vector2(0f, characterCode.jumpPower));
+        }
+        #endregion
+    }
+
+    void GroundCheck()
+    {
+        isGrounded = false;
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheckCollider.position, 0.2f, groundLayer);
+        if (colliders.Length > 0)
+        {
+            isGrounded = true;
+        }
+        animator.SetBool("Jumping", !isGrounded);
     }
 }

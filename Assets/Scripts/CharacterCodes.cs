@@ -11,6 +11,7 @@ public class CharacterCodes : MonoBehaviour
     public bool isControllable = true;
     public bool isRunning = false;
     public float horizontalVal;
+    public bool jumpFlag = false;
 
     [SerializeField] Transform groundCheckCollider;
     [SerializeField] LayerMask groundLayer;
@@ -21,7 +22,7 @@ public class CharacterCodes : MonoBehaviour
     const float groundCheckRadius = 0.2f;
     bool facingRight = true;
     [SerializeField] bool isGrounded = false;
-    [SerializeField] bool jumpFlag = false;
+
 
     void Awake()
     {
