@@ -4,19 +4,21 @@ using UnityEngine;
 
 public class CharacterCodes : MonoBehaviour
 {
+    
     public float player_speed=2;
     public float speed_modifier=2;
     public float jumpPower=500;
-
+    public bool isControllable = true;
+    public bool isRunning = false;
+    public float horizontalVal;
 
     [SerializeField] Transform groundCheckCollider;
     [SerializeField] LayerMask groundLayer;
     Rigidbody2D PlayerRb;
     Animator animator;
-    float horizontalVal;
+    
 
     const float groundCheckRadius = 0.2f;
-    bool isRunning = false;
     bool facingRight = true;
     [SerializeField] bool isGrounded = false;
     [SerializeField] bool jumpFlag = false;
@@ -44,13 +46,15 @@ public class CharacterCodes : MonoBehaviour
             jumpFlag = true;
         else if (Input.GetButtonUp("Jump"))
             jumpFlag = false;
-        
     }
 
     void FixedUpdate()
     {
         GroundCheck();
-        Move(horizontalVal,jumpFlag);
+        if (isControllable)
+            Move(horizontalVal, jumpFlag);
+        else
+            PlayerRb.linearVelocity = new Vector2(0, PlayerRb.linearVelocity.y);
     }
 
     void Move(float dir, bool jumpFlag)
@@ -89,6 +93,7 @@ public class CharacterCodes : MonoBehaviour
         {
             jumpFlag = false;
             isGrounded = false;
+            animator.SetBool("Jumping", !isGrounded);
             PlayerRb.AddForce(new Vector2(0f, jumpPower));
         }
         #endregion
@@ -102,5 +107,11 @@ public class CharacterCodes : MonoBehaviour
         {
             isGrounded = true;
         }
+        animator.SetBool("Jumping", !isGrounded);
+    }
+
+    public void SetControllable(bool setControl)
+    {
+        isControllable = setControl;
     }
 }
