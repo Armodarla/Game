@@ -13,7 +13,7 @@ public class CatFollowPlayer : MonoBehaviour
     [SerializeField] LayerMask groundLayer;
 
     Rigidbody2D rb;            // Cat's Rigidbody2D
-    [SerializeField] int catMode = 0; // 0 = Follows player, 1 = Stops, 2 = Player controls cat
+    [SerializeField] public static int catMode = 0; // 0 = Follows player, 1 = Stops, 2 = Player controls cat
     bool controllingCat = false;
     Animator animator;
 
@@ -45,7 +45,6 @@ public class CatFollowPlayer : MonoBehaviour
             CatStay();
         else if (catMode == 2)
             ControlCat();
-            
     }
 
     void ShiftMode()
