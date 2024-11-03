@@ -8,6 +8,7 @@ public class CatFollowPlayer : MonoBehaviour
     public float followDistance = 1f;  // How close the cat stays to the player
     public CharacterCodes characterCode;
     public CinemachineCamera cam;
+    public static int catMode = 1; // 0 = Follows player, 1 = Stops, 2 = Player controls cat
 
 
     [SerializeField]bool doGroundCheck = true; // Cat don't do GroundCheck when following player (until its in the follow distance)
@@ -20,7 +21,7 @@ public class CatFollowPlayer : MonoBehaviour
 
     Rigidbody2D rb;            // Cat's Rigidbody2D
     SpriteRenderer sprender;
-    [SerializeField] public static int catMode = 0; // 0 = Follows player, 1 = Stops, 2 = Player controls cat
+     
     bool controllingCat = false;
     Animator animator;
 
