@@ -17,8 +17,12 @@ public class CatFollowPlayer : MonoBehaviour
 
 
     Rigidbody2D rb;            // Cat's Rigidbody2D
+<<<<<<< HEAD
     SpriteRenderer sprender;
     [SerializeField] int catMode = 0; // 0 = Follows player, 1 = Stops, 2 = Player controls cat
+=======
+    [SerializeField] public static int catMode = 0; // 0 = Follows player, 1 = Stops, 2 = Player controls cat
+>>>>>>> fae01778a2f9e6b5d1d5fe9c9900bed0720331a4
     bool controllingCat = false;
     Animator animator;
 
@@ -51,8 +55,12 @@ public class CatFollowPlayer : MonoBehaviour
         else if (catMode == 1)
             CatStay();
         else if (catMode == 2)
+<<<<<<< HEAD
             CatControl();
         temp_text.text = ("Felix : " + catMode.ToString());
+=======
+            ControlCat();
+>>>>>>> fae01778a2f9e6b5d1d5fe9c9900bed0720331a4
     }
 
     void ShiftMode()
