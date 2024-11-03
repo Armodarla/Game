@@ -12,6 +12,7 @@ public class CharacterCodes : MonoBehaviour
     public bool isRunning = false;
     public float horizontalVal;
     public bool jumpFlag = false;
+    public bool isPaused = false;
 
     [SerializeField] Transform groundCheckCollider;
     [SerializeField] LayerMask groundLayer;
